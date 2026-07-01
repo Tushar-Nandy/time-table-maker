@@ -41,7 +41,6 @@ function Home(){
             />
             <TimeTable
                 currentTable = {currentTable}
-                selectedCells = {selectedCells}
                 setSelectedCells = {setSelectedCells}
             />
 

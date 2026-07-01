@@ -1,7 +1,8 @@
 import subjects from "../data/subjects.js"
 import teachers from "../data/teachers.js"
 
-function TimeTable({ classTitle, timeSlots,timetable, selectedCells, setSelectedCells }) {
+function TimeTable({ currentTable, setSelectedCells }){
+
     const days = [
         "Monday",
         "Tuesday",
@@ -10,6 +11,9 @@ function TimeTable({ classTitle, timeSlots,timetable, selectedCells, setSelected
         "Friday",
         "Saturday"
     ]
+    if (!currentTable) {
+        return null
+    }
 
     const formatTime = (time) =>{
         if(!time) return "--:--"
@@ -26,7 +30,7 @@ function TimeTable({ classTitle, timeSlots,timetable, selectedCells, setSelected
     return(
         <div className = "max-w-6xl mx-auto mt-10 bg-white rounded-xl shadow-lg p-8">
             <h2 className = "text-2xl font-bold mb-6">
-                {classTitle || "Untitled Class"}
+                {currentTable.title || "Untitled Timetable"}
             </h2>
             
             <table className = "w-full border border-gray-300 border-collapse">
@@ -47,14 +51,14 @@ function TimeTable({ classTitle, timeSlots,timetable, selectedCells, setSelected
                     </tr>
                 </thead>
                 <tbody>
-                    {timeSlots.map((slot)=>(
+                    {currentTable.timeSlots.map((slot)=>(
                         <tr key = {slot.id}>
                             <td className = "border border-gray-300 p-3 font-medium">
                                 {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
                             </td>
 
                             {days.map((day) => {
-                                const lecture = timetable[day]?.[slot.id]
+                                const lecture = currentTable.timetable[day]?.[slot.id]
                                 const subject = subjects.find(
                                     (sub) => sub.id ===lecture?.subjectId
                                 )
@@ -66,7 +70,7 @@ function TimeTable({ classTitle, timeSlots,timetable, selectedCells, setSelected
                                 return(
                                 <td 
                                  key = {day}
-                                 className = "border border-gray-300 p-3 h-16 cursor-pointer hover:bg-blue-50 transition-colors" 
+                                 className = "border border-gray-300 p-3 min-h-16 cursor-pointer hover:bg-blue-50 transition-colors align-top" 
                                  onClick = {() =>setSelectedCells({
                                     day,
                                     slotId: slot.id,
@@ -86,7 +90,7 @@ function TimeTable({ classTitle, timeSlots,timetable, selectedCells, setSelected
                                                 </div>
                                             </>
                                         ) : (
-                                            <div className = "text-gray-400 text-xl text-center">
+                                            <div className = "flex justify-center items-center h-full text-xl text-gray-400">
                                                 +
                                             </div>
                                         )
