@@ -4,6 +4,7 @@ import TimeTable from "../components/Timetable";
 import SetupPanel from "../components/SetupPanel";
 import LectureModal from "../components/LectureModal";
 import TableTabs from "../components/TableTabs";
+import MarksDashboard from "../components/MarksDashboard";
 
 function Home() {
     const [tables, setTables] = useState([
@@ -103,14 +104,7 @@ function Home() {
 
             {/* 📝 MARKS TAB */}
             {activeTab === "marks" && (
-                <div className="max-w-4xl mx-auto mt-6 bg-white p-6 rounded-xl shadow">
-                    <h2 className="text-xl sm:text-2xl font-bold mb-2">
-                        📝 Marks Section
-                    </h2>
-                    <p className="text-gray-600 text-sm sm:text-base">
-                        Coming soon: Student marks, tests, and report cards.
-                    </p>
-                </div>
+                <MarksDashboard />
             )}
         </div>
     );
