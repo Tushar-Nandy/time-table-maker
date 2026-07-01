@@ -1,7 +1,11 @@
-import subjects from "../data/subjects.js"
-import teachers from "../data/teachers.js"
+import { useRef } from "react";
+import {toPng, toBlob} from "html-to-image";
 
-function TimeTable({ currentTable, setSelectedCells }){
+import subjects from "../data/subjects.js";
+import teachers from "../data/teachers.js";
+
+function TimeTable({ currentTable, setSelectedCells }) {
+    const tableRef = useRef(null);
 
     const days = [
         "Monday",
@@ -9,109 +13,178 @@ function TimeTable({ currentTable, setSelectedCells }){
         "Wednesday",
         "Thursday",
         "Friday",
-        "Saturday"
-    ]
-    if (!currentTable) {
-        return null
+        "Saturday",
+    ];
+
+    if (!currentTable) return null;
+
+    const formatTime = (time) => {
+        if (!time) return "--:--";
+
+        const [hours, minutes] = time.split(":");
+
+        let hour = Number(hours);
+        const period = hour >= 12 ? "PM" : "AM";
+
+        hour = hour % 12;
+        if (hour === 0) hour = 12;
+
+        return `${hour}:${minutes} ${period}`;
+    };
+
+    const downloadTimeTable = async () => {
+    if (!tableRef.current) return;
+
+    try {
+        const dataUrl = await toPng(tableRef.current, {
+            cacheBust: true,
+            pixelRatio: 2,
+            backgroundColor: "#ffffff",
+        });
+
+        const link = document.createElement("a");
+        link.download = `${currentTable.title || "Timetable"}.png`;
+        link.href = dataUrl;
+        link.click();
+    } catch (err) {
+        console.error(err);
+        alert("Failed to download timetable.");
     }
+};
 
-    const formatTime = (time) =>{
-        if(!time) return "--:--"
-        const [hours,minutes] = time.split(":")
-        let hour = Number(hours)
-        const period = hour >= 12 ? "PM" : "AM"
+    const copyTimetable = async () => {
+        if (!tableRef.current) return;
 
-        hour = hour % 12
-        if (hour === 0) hour = 12
+        const blob = await toBlob(tableRef.current, {
+            cacheBust: true,
+            pixelRatio: 2,
+        });
 
-        return `${hour}:${minutes} ${period}`
-    }
+        if (!blob) return;
 
-    return(
-        <div className = "max-w-6xl mx-auto mt-10 bg-white rounded-xl shadow-lg p-8 overflow-x-auto">
-            <h2 className = "text-2xl font-bold mb-6">
-                {currentTable.title || "Untitled Timetable"}
-            </h2>
-            
-            <table className = "w-full border border-gray-300 border-collapse">
-                <thead>
-                    <tr>
-                        <th className = "border border-gray-300 p-3 bg-gray-100">
-                            Time
-                        </th>
+        await navigator.clipboard.write([
+            new ClipboardItem({
+                "image/png": blob,
+            }),
+        ]);
 
-                        {days.map((day) => (
-                            <th
-                                key = {day}
-                                className = "border border-gray-300 p-3 bg-gray-100"
-                            >
-                                {day}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {currentTable.timeSlots.map((slot)=>(
-                        <tr key = {slot.id}>
-                            <td className = "border border-gray-300 p-3 font-medium">
-                                {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
-                            </td>
+        alert("Timetable copied!");
+    };
 
-                            {days.map((day) => {
-                                const lecture = currentTable.timetable[day]?.[slot.id]
-                                const subject = subjects.find(
-                                    (sub) => sub.id ===lecture?.subjectId
-                                )
+    return (
+        <div className="max-w-6xl mx-auto mt-10">
 
-                                const teacher = teachers.find(
-                                    (t) => t.id === lecture?.teacherId
-                                )
+            {/* Action Buttons */}
+            <div className="flex justify-end gap-3 mb-4">
+                <button
+                    onClick={copyTimetable}
+                    className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700"
+                >
+                    📋 Copy
+                </button>
 
-                                return(
-                                <td 
-                                 key = {day}
-                                 className = "border border-gray-300 p-3 min-h-16 cursor-pointer hover:bg-blue-50 transition-colors align-top" 
-                                 onClick = {() =>setSelectedCells({
-                                    day,
-                                    slotId: slot.id,
-                                 })}
-                                 style ={{
-                                    backgroundColor: subject?.color || "white"
-                                 }}
-                                 >
-                                    {
-                                        lecture ?(
-                                            <>
-                                                <div className = "font-semibold">
-                                                    {subject?.name}
-                                                </div>
-                                                <div className = "text-sm">
-                                                    ({teacher?.name})
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <div className = "flex justify-center items-center h-full text-xl text-gray-400">
-                                                +
-                                            </div>
-                                        )
-                                    }
-                                    
-                                </td>)
-                            })}
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                <button
+                    onClick={downloadTimeTable}
+                    className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+                >
+                    📷 Download
+                </button>
+            </div>
 
-            {/* {selectedCells && (
-                <div className = "mt-4 p-4 bg-blue-100 rounded-lg">
-                    <p>Selected Day: {selectedCells.day}</p>
-                    <p>Selected Slot ID: {selectedCells.slotId}</p>
+            {/* This entire card will be exported */}
+            <div
+                ref={tableRef}
+                className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8"
+            >
+                <h2 className="text-xl sm:text-2xl font-bold mb-6 text-center">
+                    {currentTable.title || "Untitled Timetable"}
+                </h2>
+
+                <div className="overflow-x-auto">
+                    <table className="w-full min-w-[900px] border border-gray-300 border-collapse">
+                        <thead>
+                            <tr>
+                                <th className="border border-gray-300 p-3 bg-gray-100">
+                                    Time
+                                </th>
+
+                                {days.map((day) => (
+                                    <th
+                                        key={day}
+                                        className="border border-gray-300 p-3 bg-gray-100"
+                                    >
+                                        {day}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {currentTable.timeSlots.map((slot) => (
+                                <tr key={slot.id}>
+                                    <td className="border border-gray-300 p-3 font-medium">
+                                        {formatTime(slot.startTime)} -{" "}
+                                        {formatTime(slot.endTime)}
+                                    </td>
+
+                                    {days.map((day) => {
+                                        const lecture =
+                                            currentTable.timetable[day]?.[
+                                                slot.id
+                                            ];
+
+                                        const subject = subjects.find(
+                                            (sub) =>
+                                                sub.id === lecture?.subjectId
+                                        );
+
+                                        const teacher = teachers.find(
+                                            (t) =>
+                                                t.id === lecture?.teacherId
+                                        );
+
+                                        return (
+                                            <td
+                                                key={day}
+                                                className="border border-gray-300 p-2 sm:p-3 h-20 cursor-pointer hover:bg-blue-50 transition-colors text-center"
+                                                style={{
+                                                    backgroundColor:
+                                                        subject?.color ||
+                                                        "white",
+                                                }}
+                                                onClick={() =>
+                                                    setSelectedCells({
+                                                        day,
+                                                        slotId: slot.id,
+                                                    })
+                                                }
+                                            >
+                                                {lecture ? (
+                                                    <>
+                                                        <div className="font-semibold text-sm sm:text-base">
+                                                            {subject?.name}
+                                                        </div>
+
+                                                        <div className="text-xs sm:text-sm">
+                                                            ({teacher?.name})
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <div className="flex justify-center items-center h-full text-xl text-gray-400">
+                                                        +
+                                                    </div>
+                                                )}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
-            )} */}
-
+            </div>
         </div>
-    )
+    );
 }
 
-export default TimeTable
+export default TimeTable;

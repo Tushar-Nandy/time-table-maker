@@ -112,11 +112,11 @@ function SetupPanel({
                             key={slot.id}
                             className="mb-4"
                         >
-                            <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+                            <div className="flex flex-col sm:flex-row gap-3 sm:items-center mb-4">
                                 <input
                                     type="time"
                                     value={slot.startTime}
-                                    className="border rounded-lg px-3 py-2"
+                                    className="border rounded-lg px-3 py-2 w-full sm:w-auto"
                                     onChange={(e) =>
                                         updateTimeSlot(
                                             slot.id,
@@ -131,7 +131,7 @@ function SetupPanel({
                                 <input
                                     type="time"
                                     value={slot.endTime}
-                                    className="border rounded-lg px-3 py-2"
+                                    className="border rounded-lg px-3 py-2 w-full sm:w-auto"
                                     onChange={(e) =>
                                         updateTimeSlot(
                                             slot.id,
@@ -148,7 +148,7 @@ function SetupPanel({
                                     disabled={
                                         currentTable.timeSlots.length === 1
                                     }
-                                    className="px-3 py-2 rounded-lg bg-red-500 text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
+                                    className="px-3 py-2 rounded-lg bg-red-500 text-white disabled:bg-gray-300 disabled:cursor-not-allowed w-full sm:w-auto"
                                 >
                                     🗑
                                 </button>
@@ -165,7 +165,7 @@ function SetupPanel({
 
                 <button
                     onClick={addTimeSlot}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg mt-2"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg w-full sm:w-auto"
                 >
                     + Add Time Slot
                 </button>
