@@ -1,11 +1,12 @@
 import { useRef } from "react";
 import {toPng, toBlob} from "html-to-image";
 
+import ExportTimeTable from "./ExportTimeTable.jsx";
 import subjects from "../data/subjects.js";
 import teachers from "../data/teachers.js";
 
 function TimeTable({ currentTable, setSelectedCells }) {
-    const tableRef = useRef(null);
+    const exportRef = useRef(null);
 
     const days = [
         "Monday",
@@ -32,46 +33,59 @@ function TimeTable({ currentTable, setSelectedCells }) {
         return `${hour}:${minutes} ${period}`;
     };
 
-    const downloadTimeTable = async () => {
-    if (!tableRef.current) return;
+    const downloadTimeTable = async() =>{
+        if(!exportRef.current){
+            return
+        }
 
-    try {
-        const dataUrl = await toPng(tableRef.current, {
-            cacheBust: true,
-            pixelRatio: 2,
-            backgroundColor: "#ffffff",
-        });
+        try{
+            const dataUrl = await toPng(exportRef.current, {
+                cacheBust: true,
+                pixelRatio: 3,
+                backgroundColor: "white",
+            })
+            const link = document.createElement("a")
 
-        const link = document.createElement("a");
-        link.download = `${currentTable.title || "Timetable"}.png`;
-        link.href = dataUrl;
-        link.click();
-    } catch (err) {
-        console.error(err);
-        alert("Failed to download timetable.");
+            link.download = `${currentTable.title || "timetable"}.png`
+            link.href = dataUrl
+            link.click()
+        }catch(err){
+            console.error("Error exporting timetable:", err)
+            alert("Failed to export timetable. Please try again.")
+        }
     }
-};
 
-    const copyTimetable = async () => {
-        if (!tableRef.current) return;
+    const copyTimetable = async() =>{
+        if(!exportRef.current){
+            return
+        }
+        try{
+            const blob = await toBlob(exportRef.current, {
+                cacheBust: true,
+                pixelRatio: 3,
+                backgroundColor: "white",
+            })
+            if(!blob){
+                return
+            }
+            if(!navigator.clipboard || !window.ClipboardItem){
+                alert("Clipboard API not supported in this browser.")
+                return
+            }
+            await navigator.clipboard.write([
+                new window.ClipboardItem({
+                    "image/png": blob
+                })
+            ])
+            alert("Timetable copied to clipboard!")
+        }catch(err){
+            console.error("Error copying timetable:", err)
+            alert("Failed to copy timetable. Please try again.")
+        }
 
-        const blob = await toBlob(tableRef.current, {
-            cacheBust: true,
-            pixelRatio: 2,
-        });
+    }
 
-        if (!blob) return;
-
-        await navigator.clipboard.write([
-            new ClipboardItem({
-                "image/png": blob,
-            }),
-        ]);
-
-        alert("Timetable copied!");
-    };
-
-    return (
+    return (<>
         <div className="max-w-6xl mx-auto mt-10">
 
             {/* Action Buttons */}
@@ -93,7 +107,6 @@ function TimeTable({ currentTable, setSelectedCells }) {
 
             {/* This entire card will be exported */}
             <div
-                ref={tableRef}
                 className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8"
             >
                 <h2 className="text-xl sm:text-2xl font-bold mb-6 text-center">
@@ -184,6 +197,11 @@ function TimeTable({ currentTable, setSelectedCells }) {
                 </div>
             </div>
         </div>
+        <ExportTimeTable
+            currentTable = {currentTable}
+            tableRef = {exportRef}
+        />
+        </>
     );
 }
 

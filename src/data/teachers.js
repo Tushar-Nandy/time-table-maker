@@ -41,8 +41,32 @@ const teachers = [
   },
   {
     id: 11,
-    name: " ",
+    name: "Sarvat Ma'am",
   },
+  {
+    id: 12,
+    name: "Prathamesh Sir"
+  },
+  {
+    id: 13,
+    name: "Soumya Ma'am"
+  },
+  {
+    id: 14,
+    name: "Fiona Ma'am"
+  },
+  {
+    id: 15,
+    name: "Jaya Ma'am"
+  },
+  {
+    id: 16,
+    name: "Sayli Ma'am"
+  },
+  {
+    id: 20,
+    name: ""
+  }
 ];
 
 export default teachers;
