@@ -37,7 +37,6 @@ function Home(){
         <div className= "min-h-screen bg-slate-100 p-8">
             <SetupPanel
                 currentTable = {currentTable}
-                tables = {tables}
                 setTables = {setTables}
             />
             <TimeTable
