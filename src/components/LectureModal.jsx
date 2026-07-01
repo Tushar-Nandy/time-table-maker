@@ -59,7 +59,7 @@ function LectureModal({
 
     return(
         <div className = "fixed inset-0 bg-black/50 flex items-center justify-center"
-        onClick = {()=> closeModal}
+        onClick = {()=> {closeModal()}}
         >
             <div className = "bg-white rounded-xl p-6 w-[400px] shadow-xl"
             onClick = {(e)=> e.stopPropagation()}
@@ -122,7 +122,7 @@ function LectureModal({
                 {/* Buttons */}
                 <div className = "flex justify-end gap-3">
                     <button className = "px-4 py-2 rounded-lg bg-gray-300"
-                    onClick = {()=> closeModal}>Cancel</button>
+                    onClick = {()=> {closeModal()}}>Cancel</button>
                     <button className = "px-4 py-2 rounded-lg bg-blue-500 text-white"
                     onClick = {handleSave}
                     >Save</button>
