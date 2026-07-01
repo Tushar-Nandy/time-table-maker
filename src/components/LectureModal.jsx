@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 import teachers from "../data/teachers"
 import subjects from "../data/subjects"
@@ -12,9 +12,25 @@ function LectureModal({
     const [subject, setSubject] = useState("")
     const [teacher, setTeacher] = useState("")
 
+    useEffect(()=>{
+        if (!selectedCells) return;
 
-    if(!selectedCells){
-        return null
+        const lecture = timetable[selectedCells.day]?.[selectedCells.slotId]
+
+        if(lecture){
+            setSubject(lecture.subjectId)
+            setTeacher(lecture.teacherId)
+        }else{
+            setSubject("")
+            setTeacher("")
+        }
+    }, [selectedCells, timetable])
+
+
+    const closeModal = () =>{
+        setSelectedCells(null)
+        setSubject("")
+        setTeacher("")
     }
 
     const handleSave = () =>{
@@ -36,14 +52,14 @@ function LectureModal({
 
         }))
 
-        setSelectedCells(null)
-        setSubject("")
-        setTeacher("")
+        closeModal()
     }
+
+    if(!selectedCells) return null
 
     return(
         <div className = "fixed inset-0 bg-black/50 flex items-center justify-center"
-        onClick = {()=> setSelectedCells(null)}
+        onClick = {()=> closeModal}
         >
             <div className = "bg-white rounded-xl p-6 w-[400px] shadow-xl"
             onClick = {(e)=> e.stopPropagation()}
@@ -106,7 +122,7 @@ function LectureModal({
                 {/* Buttons */}
                 <div className = "flex justify-end gap-3">
                     <button className = "px-4 py-2 rounded-lg bg-gray-300"
-                    onClick = {()=> setSelectedCells(null)}>Cancel</button>
+                    onClick = {()=> closeModal}>Cancel</button>
                     <button className = "px-4 py-2 rounded-lg bg-blue-500 text-white"
                     onClick = {handleSave}
                     >Save</button>
