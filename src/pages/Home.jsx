@@ -5,50 +5,54 @@ import SetupPanel from "../components/SetupPanel"
 import LectureModal from "../components/LectureModal"
 
 function Home(){
-    const [classTitle, setClassTitle] = useState("")
-    const [timeSlots, setTimeSlots] = useState([
+    const [tables, setTables] = useState([
         {
             id: crypto.randomUUID(),
-            startTime: "",
-            endTime: "",
+            title: "",
+            timeSlots: [
+                {
+                    id: crypto.randomUUID(),
+                    startTime: "",
+                    endTime: "",
+                }
+            ],
+            
+            timetable : {
+                Monday: {},
+                Tuesday: {},
+                Wednesday: {},
+                Thursday: {},
+                Friday: {},
+                Saturday: {},
+            }
         }
     ])
-    const [timetable,setTimetable] = useState({
-        Monday: {},
-        Tuesday: {},
-        Wednesday: {},
-        Thursday: {},
-        Friday: {},
-        Saturday: {},
-    })
+    const [currentTableId, setCurrentTableId] = useState(tables[0].id)
+
+    const currentTable = tables.find((table)=> table.id === currentTableId)
 
     const [selectedCells, setSelectedCells] = useState(null)
 
     return(
         <div className= "min-h-screen bg-slate-100 p-8">
             <SetupPanel
-                classTitle = {classTitle}
-                setClassTitle = {setClassTitle}
-                timeSlots = {timeSlots}
-                setTimeSlots = {setTimeSlots}
+                currentTable = {currentTable}
+                tables = {tables}
+                setTables = {setTables}
             />
             <TimeTable
-                classTitle = {classTitle}
-                timeSlots = {timeSlots}
-                timetable = {timetable}
+                currentTable = {currentTable}
                 selectedCells = {selectedCells}
                 setSelectedCells = {setSelectedCells}
             />
 
             <LectureModal
+                currentTable = {currentTable}
+                tables = {tables}
+                setTables = {setTables}
                 selectedCells = {selectedCells}
                 setSelectedCells = {setSelectedCells}
-                timetable = {timetable}
-                setTimetable = {setTimetable}
             />
-            <pre className="bg-gray-800 text-green-400 p-4 rounded-lg overflow-auto">
-                {JSON.stringify(timetable, null, 2)}
-            </pre>
         </div>
     )
 }
