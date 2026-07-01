@@ -4,18 +4,26 @@ import teachers from "../data/teachers"
 import subjects from "../data/subjects"
 
 function LectureModal({
+    currentTable,
+    setTables,
     selectedCells,
-    setSelectedCells,
-    timetable,
-    setTimetable,
+    setSelectedCells
 }){
     const [subject, setSubject] = useState("")
     const [teacher, setTeacher] = useState("")
 
+    const updateCurrentTable = (updatedTable) => {
+        setTables((prevTables) =>
+            prevTables.map((table)=>
+                table.id === currentTable.id ? updatedTable : table
+            )
+        )
+    }
+
     useEffect(()=>{
         if (!selectedCells) return;
 
-        const lecture = timetable[selectedCells.day]?.[selectedCells.slotId]
+        const lecture = currentTable.timetable[selectedCells.day]?.[selectedCells.slotId]
 
         if(lecture){
             setSubject(lecture.subjectId)
@@ -24,7 +32,7 @@ function LectureModal({
             setSubject("")
             setTeacher("")
         }
-    }, [selectedCells, timetable])
+    }, [selectedCells, currentTable?.timetable])
 
 
     const closeModal = () =>{
@@ -39,33 +47,39 @@ function LectureModal({
             return
         }
         console.log(selectedCells)
-        setTimetable((prev)=>({
-            ...prev,
 
-            [selectedCells.day]:{
-                    ...prev[selectedCells.day],
+        updateCurrentTable({
+            ...currentTable,
+            timetable: {
+                ...currentTable.timetable,
+                [selectedCells.day]: {
+                    ...currentTable.timetable[selectedCells.day],
                     [selectedCells.slotId]:{
-                    subjectId : subject,
-                    teacherId: teacher,
+                        subjectId: subject,
+                        teacherId: teacher,
+                    }
                 }
             }
-
-        }))
+        })
 
         closeModal()
     }
 
-    if(!selectedCells) return null
+    if(!selectedCells || !currentTable) {
+        return null
+    }
+
+    const lecture = currentTable.timetable[selectedCells.day]?.[selectedCells.slotId]
 
     return(
         <div className = "fixed inset-0 bg-black/50 flex items-center justify-center"
         onClick = {()=> {closeModal()}}
         >
-            <div className = "bg-white rounded-xl p-6 w-[400px] shadow-xl"
+            <div className = "bg-white rounded-xl p-6 w-[95%] max-w-md shadow-xl"
             onClick = {(e)=> e.stopPropagation()}
             >
                 <h2 className = "text-2xl font-bold mb-6">
-                    Edit Lecture
+                    {lecture? "Edit Lecture" : "Add Lecture"}
                 </h2>
 
                 {/* Subjects */}

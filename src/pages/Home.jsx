@@ -3,6 +3,7 @@ import {useState} from "react"
 import TimeTable from "../components/Timetable"
 import SetupPanel from "../components/SetupPanel"
 import LectureModal from "../components/LectureModal"
+import TableTabs from "../components/TableTabs"
 
 function Home(){
     const [tables, setTables] = useState([
@@ -34,7 +35,13 @@ function Home(){
     const [selectedCells, setSelectedCells] = useState(null)
 
     return(
-        <div className= "min-h-screen bg-slate-100 p-8">
+        <div className= "min-h-screen bg-slate-100 p-3 sm:p-5 lg:p-8">
+            <TableTabs
+                tables = {tables}
+                currentTableId = {currentTableId}
+                setCurrentTableId = {setCurrentTableId}
+                setTables = {setTables}
+            />
             <SetupPanel
                 currentTable = {currentTable}
                 setTables = {setTables}
@@ -46,7 +53,6 @@ function Home(){
 
             <LectureModal
                 currentTable = {currentTable}
-                tables = {tables}
                 setTables = {setTables}
                 selectedCells = {selectedCells}
                 setSelectedCells = {setSelectedCells}

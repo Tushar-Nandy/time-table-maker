@@ -70,7 +70,7 @@ function SetupPanel({
     };
 
     return (
-        <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-8">
+        <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">
             <h2 className="text-2xl font-bold mb-6">
                 Timetable Settings
             </h2>
@@ -112,7 +112,7 @@ function SetupPanel({
                             key={slot.id}
                             className="mb-4"
                         >
-                            <div className="flex gap-4 items-center">
+                            <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
                                 <input
                                     type="time"
                                     value={slot.startTime}

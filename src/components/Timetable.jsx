@@ -28,7 +28,7 @@ function TimeTable({ currentTable, setSelectedCells }){
     }
 
     return(
-        <div className = "max-w-6xl mx-auto mt-10 bg-white rounded-xl shadow-lg p-8">
+        <div className = "max-w-6xl mx-auto mt-10 bg-white rounded-xl shadow-lg p-8 overflow-x-auto">
             <h2 className = "text-2xl font-bold mb-6">
                 {currentTable.title || "Untitled Timetable"}
             </h2>
