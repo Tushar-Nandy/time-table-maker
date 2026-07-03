@@ -7,6 +7,7 @@ function MarksDashboard() {
     const tableRef = useRef(null);
     const classList = Object.keys(students)
     const [selectedClass, setSelectedClass] = useState(classList[0]);
+    const [isExporting, setIsExporting] = useState(false);
 
     const [testInfo, setTestInfo] = useState({
         subject: "",
@@ -34,35 +35,52 @@ function MarksDashboard() {
             return
         }
 
-        const dataUrl = await toPng(tableRef.current,{
-            cacheBust: true,
-            pixelRatio: 2,
-            backgroundColor: "white"
-        })
+        try{
+            setIsExporting(true);
 
-        const link = document.createElement("a");
-        link.download = `${selectedClass}_marks.png`;
-        link.href = dataUrl;
-        link.click();
+            await new Promise((resolve)=> setTimeout(resolve, 100));
+            const dataUrl = await toPng(tableRef.current,{
+                cacheBust: true,
+                pixelRatio: 2,
+                backgroundColor: "white"
+            })
+            const link = document.createElement("a")
+            link.download = `${selectedClass}_marks_report.png`
+            link.href = dataUrl
+            link.click()
+        }catch(error){
+            console.error("Error occurred while exporting marks:", error);
+        }finally{
+            setIsExporting(false);
+        }
     }
 
     const copyMarks = async() =>{
         if(!tableRef.current){
             return
         }
-        const blob = await toBlob(tableRef.current, {
-            cacheBust: true,
-            pixelRatio: 2,
-            backgroundColor: "white"
-        })
-        if (!blob) {
-            console.error("Failed to convert table to blob.");
-            return;
+        try{
+            setIsExporting(true);
+
+            await new Promise((resolve) => setTimeout(resolve, 100));
+
+            const blob = await toBlob(tableRef.current, {
+                cacheBust: true,
+                pixelRatio: 2,
+                backgroundColor: "white"
+            })
+            if(!blob){
+                return
+            }
+            await navigator.clipboard.write([
+                new ClipboardItem({
+                    "image/png": blob
+                })
+            ])
+            alert("Marks table copied to clipboard!")
+        }finally{
+            setIsExporting(false);
         }
-        await navigator.clipboard.write([
-            new ClipboardItem({ "image/png": blob })
-        ])
-        alert("Marks table copied to clipboard!");
     }
 
     const currentStudents = students[selectedClass] || [];
@@ -157,26 +175,58 @@ function MarksDashboard() {
                             <th className = "p-3 border text-left">
                                 Marks
                             </th>
+                            {!isExporting && (
+                                <th>Absent</th>
+                            )}
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            currentStudents.map((student)=>(
-                                <tr key={student} className = "hover:bg-gray-50">
-                                    <td className = "p-3 border font-medium">
-                                        {student}
-                                    </td>
-                                    <td className = "p-3 border">
-                                        <input
-                                            type = "number"
-                                            placeholder = "Enter Marks"
-                                            value = {marks?.[selectedClass]?.[student] ?? ""}
-                                            onChange = {(e)=> handleMarksChange(student,e.target.value)}
-                                            className = "w-full border p-2 rounded-lg"
-                                        />
-                                    </td>
-                                </tr>
-                            ))
+                            currentStudents.map((student)=>{
+                                const isAbsent = marks?.[selectedClass]?.[student] === "AB";
+                                return(
+                                    <tr className = {`hover:bg-gray-50 ${isAbsent ? "bg-red-50" : ""}`} 
+                                    key = {student}
+                                    >
+                                        <td className = "p-3 border font-medium">
+                                            {student}
+                                        </td>
+
+                                        <td>
+                                            {isExporting ? (
+                                                <div>
+                                                    {isAbsent ? "AB": marks?.[selectedClass]?.[student] ?? ""}
+                                                </div>
+                                            ):(
+                                                <input 
+                                                    type = "number"
+                                                    placeholder = "Enter marks"
+                                                    disabled = {isAbsent}
+                                                    value = {isAbsent ? "" : marks?.[selectedClass]?.[student] ?? ""}
+                                                    onChange = {(e) => handleMarksChange(student, e.target.value)}
+                                                    className ={ `w-full border p-2 rounded-lg ${isAbsent ? "bg-gray-100 cursor-not-allowed" : "" }`}
+                                                />
+                                            )}
+                                        </td>
+                                        
+                                        {!isExporting && (
+                                            <td className="p-3 border text-center">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={isAbsent}
+                                                    onChange={(e) => {
+                                                        if (e.target.checked) {
+                                                            handleMarksChange(student, "AB");
+                                                        } else {
+                                                            handleMarksChange(student, "");
+                                                        }
+                                                    }}
+                                                />
+                                            </td>
+                                        )}
+                                    </tr>
+                                )
+                            })
                         }
                     </tbody>
                 </table>
