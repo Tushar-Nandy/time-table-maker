@@ -182,7 +182,7 @@ function TimeTable({ currentTable, setSelectedCells }) {
                                                             ({teacher?.name})
                                                         </div>
                                                         {lecture?.note && (
-    <div className="text-[11px] italic text-gray-700 mt-1">
+    <div className="text-[13px] italic text-black mt-1">
         {lecture.note}
     </div>
 )}
