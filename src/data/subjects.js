@@ -1,74 +1,167 @@
 const subjects = [
+
   {
+
     id: 1,
+
     name: "English",
-    color: "#2563EB",
+
+    color: "#3B82F6", // Bright Blue
+
   },
+
   {
+
     id: 2,
+
     name: "Hindi",
-    color: "#DC2626",
+
+    color: "#FF6B35", // Orange
+
   },
+
   {
+
     id: 3,
+
     name: "Marathi",
-    color: "#EA580C",
+
+    color: "#F4A261", // Peach
+
   },
+
   {
+
     id: 4,
+
     name: "Maths",
-    color: "#16A34A",
+
+    color: "#5E60CE", // Indigo
+
   },
+
   {
+
     id: 5,
+
     name: "Science",
-    color: "#7C3AED",
+
+    color: "#00C897", // Emerald
+
   },
+
   {
+
     id: 6,
+
     name: "Social Studies",
-    color: "#A16207",
+
+    color: "#FFD166", // Golden Yellow
+
   },
+
   {
+
     id: 7,
+
     name: "Biology",
-    color: "#84CC16",
+
+    color: "#FF4FA3", // Bio Pink
+
   },
+
   {
+
     id: 8,
+
     name: "Physics",
-    color: "#0891B2",
+
+    color: "#00B4D8", // Cyan Blue
+
   },
+
   {
+
     id: 9,
+
     name: "Chemistry",
-    color: "#9333EA",
+
+    color: "#C77DFF", // Lavender
+
   },
+
   {
+
     id: 10,
+
     name: "History",
-    color: "#CA8A04",
+
+    color: "#A97142", // Coffee Brown
+
   },
+
   {
+
     id: 11,
+
     name: "Political Science",
-    color: "#DB2777",
+
+    color: "#E63946", // Crimson Red
+
   },
+
   {
+
     id: 12,
+
     name: "Economics",
-    color: "#D97706",
+
+    color: "#F72585", // Magenta
+
   },
+
   {
+
     id: 13,
+
     name: "Geography",
-    color: "#059669",
+
+    color: "#4CC9F0", // Sky Blue
+
   },
+
   {
+
     id: 14,
-    name: "Test",
-    color: "#4B5563",
+
+    name: "Maths 1 | Science",
+
+    color: "#9D4EDD", // Royal Purple
+
   },
+
+  {
+
+    id: 15,
+
+    name: "Maths 2 | Science",
+
+    color: "#8338EC", // Deep Violet
+
+  },
+
+  {
+
+    id: 16,
+
+    name: "Test",
+
+    color: "#EF233C", // Bright Red
+
+  }
+
 ];
+
+
 
 export default subjects;
