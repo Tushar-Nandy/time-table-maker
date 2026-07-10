@@ -121,6 +121,18 @@ function ExportTimeTable({ currentTable, tableRef }) {
                                                 >
                                                     ({teacher?.name})
                                                 </div>
+                                                {lecture?.note && (
+    <div
+        style={{
+            fontSize: "11px",
+            fontStyle: "italic",
+            marginTop: "4px",
+            color: "#555",
+        }}
+    >
+        {lecture.note}
+    </div>
+)}
                                             </>
                                         )}
                                     </td>
