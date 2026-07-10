@@ -124,10 +124,10 @@ function ExportTimeTable({ currentTable, tableRef }) {
                                                 {lecture?.note && (
     <div
         style={{
-            fontSize: "11px",
+            fontSize: "13px",
             fontStyle: "italic",
             marginTop: "4px",
-            color: "#555",
+            color: "#000000",
         }}
     >
         {lecture.note}
