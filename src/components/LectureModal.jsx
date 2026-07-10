@@ -144,10 +144,11 @@ function LectureModal({
 
     <input
         type="text"
+        rows={2}
         placeholder="Chapter 5 Test, Practical, Revision..."
         value={note}
         onChange={(e) => setNote(e.target.value)}
-        className="w-full border rounded-lg px-3 py-2"
+        className="w-full border rounded-lg px-3 py-2 resize-none"
     />
 </div>
                 
