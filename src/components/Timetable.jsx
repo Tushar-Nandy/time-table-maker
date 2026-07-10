@@ -181,6 +181,11 @@ function TimeTable({ currentTable, setSelectedCells }) {
                                                         <div className="text-xs sm:text-sm">
                                                             ({teacher?.name})
                                                         </div>
+                                                        {lecture?.note && (
+    <div className="text-[11px] italic text-gray-700 mt-1">
+        {lecture.note}
+    </div>
+)}
                                                     </>
                                                 ) : (
                                                     <div className="flex justify-center items-center h-full text-xl text-gray-400">
