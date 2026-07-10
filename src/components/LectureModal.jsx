@@ -11,6 +11,7 @@ function LectureModal({
 }){
     const [subject, setSubject] = useState("")
     const [teacher, setTeacher] = useState("")
+    const [note, setNote] = useState("")
 
     const updateCurrentTable = (updatedTable) => {
         setTables((prevTables) =>
@@ -28,9 +29,11 @@ function LectureModal({
         if(lecture){
             setSubject(lecture.subjectId)
             setTeacher(lecture.teacherId)
+            setNote(lecture.note || "")
         }else{
             setSubject("")
             setTeacher("")
+            setNote("")
         }
     }, [selectedCells, currentTable?.timetable])
 
@@ -39,6 +42,7 @@ function LectureModal({
         setSelectedCells(null)
         setSubject("")
         setTeacher("")
+        setNote("")
     }
 
     const handleSave = () =>{
@@ -57,6 +61,7 @@ function LectureModal({
                     [selectedCells.slotId]:{
                         subjectId: subject,
                         teacherId: teacher,
+                        note: note.trim(),
                     }
                 }
             }
@@ -132,6 +137,19 @@ function LectureModal({
                         ))}
                     </select>
                 </div>
+                <div className="mb-4">
+    <label className="block mb-2 font-medium">
+        Notes (Optional)
+    </label>
+
+    <input
+        type="text"
+        placeholder="Chapter 5 Test, Practical, Revision..."
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+        className="w-full border rounded-lg px-3 py-2"
+    />
+</div>
                 
                 {/* Buttons */}
                 <div className = "flex flex-col sm:flex-row justify-end gap-3">
